@@ -1,45 +1,95 @@
 from collections import OrderedDict
-from datetime import datetime
 
 import re
 
-from databases.inventory import Inventory, write_new_csv_file, update_item
+from databases.inventory import Inventory
 from console_ui.console import Console
+from register import Register
 
 
-def view_item():
+register = Register(
+        Inventory, 
+        ['product_name', 'product_price', 'product_quantity', 'date_updated']
+    )
+
+def go_through_items(id_item, len_total):
     while True:
-        total_items = len(Inventory)
-        text = f"You can insert a number between 1 to {total_items}\n"
-        text += "Write back to return"
-        Console.print_banner("V I E W  I T E M")
-        Console.print_text(text)
-        user_input = input("> ")
-        if user_input == 'back':
-            print("go out...")
-            return True
+        Console.print_text("[n] Next - [p] Previous - [q] Quit")
+        answer = input("> ").lower()
+        if answer == 'q':
+            return
+        elif answer == 'n':
+            id_item += 1
+        elif answer == 'p':
+            id_item -= 1
+        if id_item > len_total:
+            id_item = 0
+        elif id_item < 1:
+            id_item = len_total
+        show_item_details(id_item, len_total)
+
+
+def show_item_details(id_item, len_items):
+    if id_item in range(1, len_items + 1):
+        item = register.data.get_by_id(id_item)
+        Console.print_item_details(item)
+    else:
+        Console.notification("input", "isn't exist", "")
+
+def show_whole_items():
+    while True:
+        registers = register.data.select()[:]
+        Console.print_banner(
+            "Product Name - Quantity"
+        )
+        Console.priint_name_item(registers)
+        Console.print_text("write a [number] or [back] to return")
+        user_input = input("> ").lower()
+        if user_input == "back":
+            return False
         try:
             id_item = int(user_input)
         except ValueError:
-            Console.input_error()
-            continue
+            Console.notification("input", "isn't valid", "")
         else:
-            if id_item in range(1, total_items + 1):
-                item = Inventory.get_by_id(id_item)
-                Console.print_item_details(item)
-            else:
-                input("Not exist this value, enter to try again")
+            show_item_details(id_item, len(registers))
+            go_through_items(id_item, len(registers))
+
+
+def view_item():
+    """ View a single product's inventory"""
+    is_looking = True
+    while is_looking:
+        items = len(register.data)
+        Console.print_banner("V I E W   I T E M", "~")
+        Console.options_view(items)
+        user_input = input("> ").lower()
+        if user_input == 'back':
+            print("go out...")
+            is_looking = False
+            continue
+        if user_input == "show":
+            is_looking = show_whole_items()
+            continue
+        try:
+            id_item = int(user_input)
+        except ValueError:
+            Console.notification("input", "isn't valid", "")
+        else:
+            show_item_details(id_item, items)
+            go_through_items(id_item, items)
 
 
 def wait_valid_input(field):
     while True:
-        value = input(f"Insert {field}: ")
-        if field == "quiantity":
+        parameter = field.replace("product_", "")
+        value = input(f"Insert {parameter}: ")
+        if field == "product_quantity":
             try:
                 value = int(value)
             except:
                 continue
-        elif field == "price":
+        elif field == "product_price":
             try:
                 price = re.findall(r"\d+\.\d+", value)[0]
                 value = round(float(price) * 100.00)
@@ -50,60 +100,60 @@ def wait_valid_input(field):
 
 
 def add_entry():
-    fields = OrderedDict([
-        ("name", "product_name"),
-        ("price", "product_price"),
-        ("quantity", "product_quantity")
-    ])
+    """ Add a new product to database """
     item = {}
-    for field, key in fields.items():
-        Console.print_banner("A D D  E N T R Y")
+    for field_key in register.fileds:
+        Console.print_banner("A D D   E N T R Y", "~")
         Console.print_field_added(item)
-        item[key] = wait_valid_input(field)
+        if field_key == "date_updated":
+            continue
+        if field_key == "product_price":
+            Console.print_text("Example price in $us: 14.0")
+        item[field_key] = wait_valid_input(field_key)
     try:
-        inventory = Inventory.select().where(Inventory.product_name.contains(item['product_name']))
-        if len(inventory):
-            update_item(inventory, item, datetime.now())
-        else:
-            Inventory.create(**item)
+        register.fill_records([item])
     except:
-        print("Not added")
-        input()
+        Console.notification("product", "not added")
     else:
-        print("Added successfully")
-        input()
-    return True
+        Console.notification("product", "added successfully")
 
 
 def make_backup():
-    write_new_csv_file()
-    input("A backup was created")
-    return True
+    """ Make a backup of the entire inventory """
+    if register.make_a_backup():
+        Console.notification("backup", "created")
+    else:
+        Console.notification("backup", "not created")
 
 
 def quit_menu():
-    print("bye bye!!...")
-    return False
+    """ Quit app """
+    Console.print_exit_message()
+    return True
 
 
 def prompt_menu():
     actions = OrderedDict([
-        ('v', ["View a single product's inventory", view_item]),
-        ('a', ["Add a new product to database", add_entry]),
-        ('b', ["Make a backup of the entire inventory", make_backup]),
-        ('q', ["To quit", quit_menu])
+        ('v', view_item),
+        ('a', add_entry),
+        ('b', make_backup),
+        ('q', quit_menu)
     ])
-    continue_ = True
-    while continue_:
-        Console.print_banner("M E N U", '/')
-        Console.show_values(actions)
-        answer = input("> ")
+    quit_ = False
+    while not quit_:
+        Console.print_banner("M E N U", '<>')
+        Console.print_menu(actions)
+        answer = input("> ").lower()
 
         if answer in actions:
-            continue_ = actions[answer][-1]()
+            quit_ = actions[answer]()
             continue
-        input("Try again... enter to continue")            
+        Console.notification("input", "not correct")       
 
 
 if __name__ == "__main__":
+    try:
+        len(register.data)
+    except:
+        register.create_database()
     prompt_menu()
