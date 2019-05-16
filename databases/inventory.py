@@ -31,6 +31,7 @@ def update_item(inventory, item, date=None):
 
 
 def optain_csv_data(file='databases/inventory.csv'):
+    inventory = []
     with open(file, newline='') as csvfile:
         invreader = csv.DictReader(csvfile)
         for row in list(invreader)[:]:
@@ -42,14 +43,11 @@ def optain_csv_data(file='databases/inventory.csv'):
             item['product_price'] = value
             item['product_quantity'] = quantity
             item['date_updated'] = date
-            inventory = Inventory.select().where(Inventory.product_name.contains(item['product_name']))
-            if len(inventory):
-                update_item(inventory, item)
-            else:
-                Inventory.create(**item)
+            inventory.append(item)
+    return inventory
 
 
-def write_new_csv_file(file="backup/backup.csv"):
+def convert_to_csv_file():
     inventory = Inventory.select()
     products = []
     for row in inventory:
@@ -61,17 +59,9 @@ def write_new_csv_file(file="backup/backup.csv"):
         item['product_quantity'] = row.product_quantity
         item['date_updated'] = date
         products.append(item)
-
-    with open(file, "w", newline='') as backup_file:
-        fieldnames = ['product_name', 'product_price', 'product_quantity', 'date_updated']
-        inventory_file = csv.DictWriter(backup_file, fieldnames=fieldnames)
-        inventory_file.writeheader()
-        for product in products:
-            inventory_file.writerow(product)
+    return products
 
 
 if __name__ == "__main__":
     db.connect()
     db.create_tables([Inventory], safe=True)
-    optain_csv_data()
-    #write_new_csv_file()
