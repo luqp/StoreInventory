@@ -54,8 +54,8 @@ class Console():
 
     @classmethod
     def print_item_details(cls, item):
-        cls.print_banner(f"{item.product_name}", " ")
-        print(f"Price: {item.product_price}")
+        cls.print_banner(f"{item.product_name}")
+        print(f"Price: {item.product_price} cents")
         print(f"Quantity: {item.product_quantity}")
         print(f"Date update: {item.date_updated.strftime('%b/%d/%Y')}")
         print()
