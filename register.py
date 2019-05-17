@@ -1,7 +1,7 @@
 import re
 import csv
 
-from databases.inventory import update_item, optain_csv_data, convert_to_csv_file
+from databases.data_handler import update_item, optain_csv_data, convert_to_csv_file
 
 
 class Register():
@@ -17,7 +17,7 @@ class Register():
     def fill_records(self, data):
         for item in data:
             equals_items = self.data.select().where(
-                self.data.product_name.contains(item[self.fileds[0]])
+                self.data.product_name == item[self.fileds[0]]
             )
             if len(equals_items):
                 update_item(equals_items, item)
@@ -25,7 +25,7 @@ class Register():
                 self.data.create(**item)
 
     def make_a_backup(self, file="backup/backup.csv"):
-        converted_products = convert_to_csv_file()
+        converted_products = convert_to_csv_file(self.data)
         with open(file, "w", newline='') as backup_file:
             inventory_file = csv.DictWriter(backup_file, fieldnames=self.fileds)
             inventory_file.writeheader()
