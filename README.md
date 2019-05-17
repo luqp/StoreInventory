@@ -28,9 +28,7 @@ python app.py
 * Handles pagination
 
 ## Use your own CSV data
-1. Add your data file to the folder.
-
-Here a [example](https://github.com/windyludev/StoreInventory/blob/master/backup/backup.csv) of format CSV data that handles this app.
+1. Add your data file to the folder, here a [example](https://github.com/windyludev/StoreInventory/blob/master/backup/backup.csv) of format CSV data that handles this app.
 
 2. Delete the data base and create another new.
 
