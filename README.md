@@ -12,7 +12,7 @@ Install the project requirements from the provided requirements.txt file by runn
 pip3 install -r requirements.txt
 ```
 
-## It's easy
+## To use the app
 **0. Create the database:** _(If you want to create your own database, don't download the `inventory.db` file)_
 * First, you have to run the `inventory.py` file
 ```
