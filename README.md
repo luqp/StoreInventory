@@ -33,7 +33,7 @@ Here a [example](https://github.com/windyludev/StoreInventory/blob/master/backup
 Delete the data base and create another new, and add your path parameter
 in the `StoreInventory/app.py` file:
 ```python
-159     register.create_database('~/here_your_csv_data.csv'):
+159     register.create_database('./here_your_csv_data.csv'):
 ```
 
 after that run the `app.py` file and you can use the app with your data.
