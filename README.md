@@ -17,6 +17,7 @@ python .\databases\inventory.py
 ```
 python app.py
 ```
+(You need to install the `peewee` library to run this project)
 
 ## Features:
 * Converts CSV data into a handler List 
