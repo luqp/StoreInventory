@@ -6,6 +6,12 @@ in which you can show items, add new items, and create a backup.
     <img src="https://github.com/windyludev/StoreInventory/blob/master/imgs/store_inventory.jpg"/>
 </p>
 
+## Install required dependencies
+Install the project requirements from the provided requirements.txt file by running the following command in your terminal:
+```
+pip3 install -r requirements.txt
+```
+
 ## It's easy
 **0. Create the database:** _(If you want to create your own database, don't download the `inventory.db` file)_
 * First, you have to run the `inventory.py` file
