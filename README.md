@@ -29,12 +29,18 @@ python app.py
 
 ## Use your own CSV data
 1. Add your data file to the folder.
+
 Here a [example](https://github.com/windyludev/StoreInventory/blob/master/backup/backup.csv) of format CSV data that handles this app.
+
 2. Delete the data base and create another new.
+
 #### Insert the path of your CSV file:
+
 3. Add your path parameter in the `StoreInventory/app.py` file, like this:
 ```python
 159     register.create_database('./here_your_csv_data.csv')
 ```
+
 4. After that run the `app.py` file.
+
 Now you can use the app with your data.
