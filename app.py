@@ -14,7 +14,7 @@ register = Register(
 
 def go_through_items(id_item, len_total):
     while True:
-        Console.print_text("[n] Next - [p] Previous - [q] Quit")
+        Console.options_item()
         answer = input("> ").lower()
         if answer == 'q':
             return
@@ -33,27 +33,35 @@ def show_item_details(id_item, len_items):
     if id_item in range(1, len_items + 1):
         item = register.data.get_by_id(id_item)
         Console.print_item_details(item)
+        return True
     else:
         Console.notification("input", "isn't exist", "")
+        return False
+
+
+def validate_to_show_item(user_input, len_items):
+    try:
+        id_item = int(user_input)
+    except ValueError:
+        Console.notification("input", "isn't valid", "")
+        return
+    else:
+        if show_item_details(id_item, len_items):
+            go_through_items(id_item, len_items)
+
 
 def show_whole_items():
     while True:
         registers = register.data.select()[:]
         Console.print_banner(
-            "Product Name - Quantity"
+            Console.green("Product Name")
         )
-        Console.priint_name_item(registers)
-        Console.print_text("write a [number] or [back] to return")
+        Console.print_name_item(registers)
+        Console.options_whole_items()
         user_input = input("> ").lower()
         if user_input == "back":
             return False
-        try:
-            id_item = int(user_input)
-        except ValueError:
-            Console.notification("input", "isn't valid", "")
-        else:
-            show_item_details(id_item, len(registers))
-            go_through_items(id_item, len(registers))
+        validate_to_show_item(user_input, len(registers))
 
 
 def view_item():
@@ -61,23 +69,16 @@ def view_item():
     is_looking = True
     while is_looking:
         items = len(register.data)
-        Console.print_banner("V I E W   I T E M", "~")
+        Console.print_banner("V I E W   I T E M S", "~")
         Console.options_view(items)
         user_input = input("> ").lower()
         if user_input == 'back':
-            print("go out...")
             is_looking = False
             continue
         if user_input == "show":
             is_looking = show_whole_items()
             continue
-        try:
-            id_item = int(user_input)
-        except ValueError:
-            Console.notification("input", "isn't valid", "")
-        else:
-            show_item_details(id_item, items)
-            go_through_items(id_item, items)
+        validate_to_show_item(user_input, items)
 
 
 def wait_valid_input(field):
@@ -91,7 +92,7 @@ def wait_valid_input(field):
                 continue
         elif field == "product_price":
             try:
-                price = re.findall(r"\d+\.\d+", value)[0]
+                price = re.findall(r"\d+\.?\d+?", value)[0]
                 value = round(float(price) * 100.00)
             except:
                 continue
@@ -108,11 +109,11 @@ def add_entry():
         if field_key == "date_updated":
             continue
         if field_key == "product_price":
-            Console.print_text("Example price in $us: 14.0")
+            Console.field_key_note()
         item[field_key] = wait_valid_input(field_key)
     try:
         register.fill_records([item])
-    except:
+    except ValueError:
         Console.notification("product", "not added")
     else:
         Console.notification("product", "added successfully")
@@ -144,7 +145,6 @@ def prompt_menu():
         Console.print_banner("M E N U", '<>')
         Console.print_menu(actions)
         answer = input("> ").lower()
-
         if answer in actions:
             quit_ = actions[answer]()
             continue
@@ -153,7 +153,8 @@ def prompt_menu():
 
 if __name__ == "__main__":
     try:
-        len(register.data)
+        if not len(register.data):
+            raise ValueError
     except:
         register.create_database()
     prompt_menu()
