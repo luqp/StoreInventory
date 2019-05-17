@@ -7,11 +7,12 @@ in which you can show items, add new items, and create a backup.
 </p>
 
 ## It's easy
-_(If you want to create your own database, don't download the `inventory.db` file)_
+**0. Create the database:** _(If you want to create your own database, don't download the `inventory.db` file)_
 * First, you have to run the `inventory.py` file
 ```
-python inventory.py
+python .\databases\inventory.py
 ```
+**1. Run the program**
 * After you have the database, you have to run the `app.py` file
 ```
 python app.py
