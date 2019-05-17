@@ -27,12 +27,14 @@ python app.py
 * Handles pagination
 
 ## Use your own CSV data
-Here a ![example](https://github.com/windyludev/StoreInventory/blob/master/backup/backup.csv) of format CSV data that handles this app
+Here a [example](https://github.com/windyludev/StoreInventory/blob/master/backup/backup.csv) of format CSV data that handles this app
 
 To insert your data you can:
 
-### Change the default file:
-In the `StoreInventory/databases/data_handler.py ` file, in the `optain_csv_data` method change the parameter path:
+### Add your CSV file path:
+Delete the data base and create another new, and add a your path parameter
+in the `StoreInventory/app.py` file:
 ```python
-20      def optain_csv_data(file='~/here_your_csv_data.csv'):
+159     register.create_database('~/here_your_csv_data.csv'):
 ```
+
