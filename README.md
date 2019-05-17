@@ -14,12 +14,12 @@ pip3 install -r requirements.txt
 
 ## To use the app
 **0. Create the database:** _(If you want to create your own database, don't download the `inventory.db` file)_
-* First, you have to run the `inventory.py` file
+* You have to run the `inventory.py` file
 ```
 python .\databases\inventory.py
 ```
 **1. Run the program**
-* After you have the database, you have to run the `app.py` file
+* Run the `app.py` file
 ```
 python app.py
 ```
