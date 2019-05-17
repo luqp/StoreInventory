@@ -10,9 +10,12 @@ class Register():
         self.data = database
         self.fileds = fields
 
-    def create_database(self):
+    def create_database(self, file_path=None):
         self.data.create_table()
-        self.fill_records(optain_csv_data())
+        if file_path:
+            self.fill_records(optain_csv_data(file_path))
+        else:
+            self.fill_records(optain_csv_data())
     
     def fill_records(self, data):
         for item in data:
