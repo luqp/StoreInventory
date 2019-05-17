@@ -19,9 +19,8 @@ pip3 install -r requirements.txt
 python .\databases\inventory.py
 ```
 **1. Run the program**
-* Run the `app.py` file
 ```
-python app.py
+python .\app.py
 ```
 
 ## Features:
