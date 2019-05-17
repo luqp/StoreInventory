@@ -22,7 +22,7 @@ python app.py
 * Converts CSV data into a handler List 
 * Converts data of database in CSV file
 * Add new items
-* Update a item to the last version 
+* Update an item to the last version 
 * Shows a single item
 * Shows whole table items
 * Handles pagination
